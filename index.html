@@ -47,7 +47,66 @@ header p {
   border-radius: 999px;
   font-size: 14px;
 }
+/* HOMEPAGE OPTIONS */
+.home-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
+}
 
+.option-card {
+  background: white;
+  border: 1px solid #e8ebf2;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 4px 18px rgba(20,30,60,.06);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(20,30,60,.12);
+}
+
+.option-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.option-card h2 {
+  font-size: 20px;
+  margin: 0 0 9px;
+}
+
+.option-card p {
+  color: #596275;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 67px;
+}
+
+.option-card button {
+  border: none;
+  background: #3157d5;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.option-card button:hover {
+  opacity: .9;
+}
+
+/* MAIN */
+.container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 35px 20px 60px;
+}
 /* MAIN */
 .container {
   max-width: 1150px;
@@ -198,7 +257,14 @@ footer {
   .controls {
     grid-template-columns: 1fr 1fr;
   }
+@media(max-width: 900px) {
+  .home-options {
+    grid-template-columns: 1fr;
+  }
 
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
   .controls input {
     grid-column: 1 / -1;
   }
@@ -238,18 +304,36 @@ footer {
   <h1>Bay Area Opportunities</h1>
 
   <p>
-    Find internships, volunteering, research programs,
-    leadership opportunities, and more—all in one place.
+    Discover internships, volunteering, research, leadership programs,
+    and other opportunities for Bay Area students.
   </p>
 
   <div class="hero-badge">
-    🎓 Opportunities for Bay Area students
+    🎓 Find your next opportunity
   </div>
 </header>
 
-<main class="container">
+   </p>
+    <button onclick="alert('The personalized opportunity finder is coming soon!')">
+      Coming Soon
+    </button>
+  </div>
 
-  <section class="controls">
+  <div class="option-card">
+    <div class="option-icon">💡</div>
+    <h2>Explore by Interest</h2>
+    <p>
+      Discover opportunities organized around subjects
+      and career interests.
+    </p>
+    <button onclick="document.getElementById('category').focus()">
+      Browse Interests →
+    </button>
+  </div>
+
+</section>
+
+<section class="controls">
     <input id="search" placeholder="🔎 Search opportunities...">
 
     <select id="category">
