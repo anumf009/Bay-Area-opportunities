@@ -4,96 +4,420 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bay Area Opportunities</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f7f8fc;color:#172033}
-header{background:#172033;color:white;padding:56px 20px;text-align:center}
-header h1{font-size:42px;margin:0 0 12px}header p{font-size:18px;margin:0 auto;max-width:700px;opacity:.9}
-.container{max-width:1100px;margin:0 auto;padding:30px 20px}
-.controls{background:white;padding:20px;border-radius:16px;box-shadow:0 3px 15px #00000012;display:grid;grid-template-columns:2fr repeat(4,1fr);gap:12px;margin-bottom:25px}
-input,select{width:100%;padding:12px;border:1px solid #d7dbe5;border-radius:9px;background:white;font-size:14px}
-.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
-.card{background:white;border-radius:16px;padding:20px;box-shadow:0 3px 15px #00000010;border:1px solid #eef0f5;display:flex;flex-direction:column}
-.badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}.badge{font-size:12px;padding:5px 8px;border-radius:999px;background:#eef2ff}
-.card h2{font-size:20px;margin:4px 0 8px}.org{font-weight:bold;font-size:14px;margin-bottom:8px}.meta{font-size:13px;color:#596275;line-height:1.6}.card a{margin-top:auto;padding-top:15px;color:#3157d5;font-weight:bold;text-decoration:none}
-.empty{text-align:center;padding:50px;color:#687083}
-@media(max-width:800px){.controls{grid-template-columns:1fr 1fr}.controls input{grid-column:1/-1}}
-@media(max-width:500px){.controls{grid-template-columns:1fr}}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+}
+
+/* HERO */
+header {
+  background: linear-gradient(135deg, #172033, #3157d5);
+  color: white;
+  padding: 70px 20px 65px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 48px;
+  margin: 0 0 15px;
+  letter-spacing: -1px;
+}
+
+header p {
+  font-size: 19px;
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto 25px;
+  opacity: .92;
+}
+
+.hero-badge {
+  display: inline-block;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  padding: 9px 15px;
+  border-radius: 999px;
+  font-size: 14px;
+}
+
+/* MAIN */
+.container {
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 35px 20px 60px;
+}
+
+/* FILTER BOX */
+.controls {
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  box-shadow: 0 5px 25px rgba(20,30,60,.08);
+  display: grid;
+  grid-template-columns: 2fr repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid #d9deea;
+  border-radius: 10px;
+  background: white;
+  font-size: 14px;
+  color: #172033;
+  outline: none;
+}
+
+input:focus,
+select:focus {
+  border-color: #3157d5;
+  box-shadow: 0 0 0 3px rgba(49,87,213,.10);
+}
+
+/* RESULTS COUNT */
+.results-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.count {
+  font-size: 14px;
+  color: #596275;
+  font-weight: 600;
+}
+
+/* CARDS */
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 22px;
+  border: 1px solid #e8ebf2;
+  box-shadow: 0 4px 18px rgba(20,30,60,.06);
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(20,30,60,.12);
+}
+
+.badges {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 13px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #3157d5;
+}
+
+.badge.green {
+  background: #eaf8f0;
+  color: #23834f;
+}
+
+.card h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 3px 0 8px;
+}
+
+.org {
+  font-weight: 700;
+  font-size: 14px;
+  color: #39445a;
+  margin-bottom: 12px;
+}
+
+.meta {
+  font-size: 13px;
+  color: #596275;
+  line-height: 1.8;
+}
+
+.card a {
+  margin-top: auto;
+  padding-top: 18px;
+  color: #3157d5;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.card a:hover {
+  text-decoration: underline;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 70px 20px;
+  background: white;
+  border-radius: 18px;
+  color: #687083;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #687083;
+  font-size: 13px;
+}
+
+/* MOBILE */
+@media(max-width: 900px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .controls input {
+    grid-column: 1 / -1;
+  }
+}
+
+@media(max-width: 600px) {
+  header {
+    padding: 50px 18px;
+  }
+
+  header h1 {
+    font-size: 36px;
+  }
+
+  header p {
+    font-size: 16px;
+  }
+
+  .controls {
+    grid-template-columns: 1fr;
+  }
+
+  .controls input {
+    grid-column: auto;
+  }
+
+  .results {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>Bay Area Opportunities</h1>
-<p>Find extracurriculars, internships, volunteering, programs, and other opportunities that fit your interests.</p>
+  <h1>Bay Area Opportunities</h1>
+
+  <p>
+    Find internships, volunteering, research programs,
+    leadership opportunities, and more—all in one place.
+  </p>
+
+  <div class="hero-badge">
+    🎓 Opportunities for Bay Area students
+  </div>
 </header>
+
 <main class="container">
-<section class="controls">
-<input id="search" placeholder="Search opportunities...">
-<select id="category"><option value="">All categories</option></select>
-<select id="grade"><option value="">All grades</option></select>
-<select id="type"><option value="">All types</option></select>
-<select id="paid"><option value="">Paid / Volunteer</option></select>
-</section>
-<div id="count" class="meta" style="margin-bottom:15px"></div>
-<section id="results" class="results"></section>
+
+  <section class="controls">
+    <input id="search" placeholder="🔎 Search opportunities...">
+
+    <select id="category">
+      <option value="">All categories</option>
+    </select>
+
+    <select id="grade">
+      <option value="">All grades</option>
+    </select>
+
+    <select id="type">
+      <option value="">All types</option>
+    </select>
+
+    <select id="paid">
+      <option value="">Paid / Volunteer</option>
+    </select>
+  </section>
+
+  <div class="results-top">
+    <div id="count" class="count"></div>
+  </div>
+
+  <section id="results" class="results"></section>
+
 </main>
 
+<footer>
+  Bay Area Opportunities • Helping students find opportunities that fit their interests.
+</footer>
+
 <script>
+
 const opportunities = [{"Title": "Community Youth Courts Volunteer", "Category": "Law & Government", "Organization": "Community Youth Courts", "Location": "Contra Costa County", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.communityyouthcourts.com/volunteer.html"}, {"Title": "CYDL Summer Legal Fellowship", "Category": "Law & Government", "Organization": "Center for Youth Development through Law", "Location": "Bay Area", "Type": "Fellowship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://www.youthlawworks.org/programs"}, {"Title": "YMCA Youth Advocate Program", "Category": "Law & Government", "Organization": "YMCA Youth & Government", "Location": "California", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.ymcayag.org/yap/"}, {"Title": "SF Public Defender High School Internship", "Category": "Law & Government", "Organization": "San Francisco Public Defender's Office", "Location": "San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://sfpublicdefender.org/careers/internship/"}, {"Title": "Contra Costa Mock Trial Program", "Category": "Law & Government", "Organization": "Contra Costa County Office of Education", "Location": "Contra Costa County", "Type": "Competition", "Grade Level": "9–12", "Paid/Volunteer": "", "Difficulty": "Medium", "Link": "https://www.cccoe.k12.ca.us/Departments--Schools/Departments/Communications/Academic-Events/Mock-Trial/index.html"}, {"Title": "City of Tracy Mayor's Youth Internship", "Category": "Law & Government", "Organization": "City of Tracy", "Location": "Tracy", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "Medium", "Link": "https://www.cityoftracy.org/Departments/Human-Resources/Youth-Engagement-Activities"}, {"Title": "Bay Area Urban Debate League", "Category": "Law & Government", "Organization": "BAUDL", "Location": "Bay Area", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "", "Difficulty": "Medium", "Link": "https://www.baudl.org/get-involved.html"}, {"Title": "California Youth Advisory Council", "Category": "Law & Government", "Organization": "California Commission on the Status of Women and Girls", "Location": "California", "Type": "Leadership", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "High", "Link": "https://women.ca.gov/youth-advisory-council-applications/"}, {"Title": "SF Bar JDC Law Internships", "Category": "Law & Government", "Organization": "Justice & Diversity Center", "Location": " San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://www.sfbar.org/jdc/diversity-programs-volunteer-opportunities/"}, {"Title": "Communities for a Better Environment", "Category": "Law & Government", "Organization": "Communities for a Better Environment", "Location": "Bay Area", "Type": "Volunteer/Internship", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.cbecal.org/get-involved/volunteer-internships/"}, {"Title": "Experiences in Research (EinR)", "Category": "Computer Science / Engineering", "Organization": "Lawrence Berkeley National Laboratory", "Location": "Berkeley", "Type": "research internship", "Grade Level": "High School", "Paid/Volunteer": "Paid/Varies", "Difficulty": "High", "Link": "https://k12education.lbl.gov/programs/high-school/experiences-in-research"}, {"Title": "Dev/Mission Tech Pre-Apprenticeship", "Category": "Computer Science / Engineering", "Organization": "Dev/Mission", "Location": "San Francisco", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "https://devmission.org/"}, {"Title": "Starter School Program", "Category": "Computer Science / Engineering", "Organization": "Starter School", "Location": "Remote", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Medium", "Link": "https://www.starterschool.com/"}, {"Title": "Lockheed Martin Space Internship", "Category": "Computer Science / Engineering", "Organization": "Lockheed Martin", "Location": "Bay Area", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://www.lockheedmartin.com/en-us/careers/candidates/students-early-careers/high-school.html"}, {"Title": "GRIPS Stanford", "Category": "Computer Science / Engineering", "Organization": "Stanford University", "Location": "Stanford", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://med.stanford.edu/genetics/education/GRIPS.html"}, {"Title": "UC Santa Cruz SIP", "Category": "Computer Science / Engineering", "Organization": "UC Santa Cruz", "Location": "Santa Cruz", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "High", "Link": "https://sip.ucsc.edu/"}, {"Title": "UCSF AI4ALL", "Category": "Computer Science / Engineering", "Organization": "UCSF", "Location": "San Francisco", "Type": "AI Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://ai4all.ucsf.edu/apply.html"}, {"Title": "Stanford SIMR", "Category": "Computer Science / Engineering", "Organization": "Stanford Medicine", "Location": "Stanford", "Type": "AI Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://med.stanford.edu/simr/program-information.html"}, {"Title": "Hidden Genius Project", "Category": "Computer Science / Engineering", "Organization": "Hidden Genius Project", "Location": "Bay Area", "Type": "Research Program", "Grade Level": "11–12", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://www.hiddengeniusproject.org/"}, {"Title": "UCSF SSRP", "Category": "Health & Medicine", "Organization": "UCSF Benioff Children's Hospital", "Location": "San Francisco", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "High", "Link": "https://summerstudents.ucsf.edu/"}, {"Title": "Stanford Medical Youth Science Program", "Category": "Health & Medicine", "Organization": "Stanford Medicine", "Location": "Stanford", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://med.stanford.edu/che.html"}, {"Title": "UCSF High School Intern Program", "Category": "Health & Medicine", "Organization": "UCSF", "Location": "San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid/Varies", "Difficulty": "High", "Link": "https://sep.ucsf.edu/programs/high-school-students/intern-program/"}, {"Title": "Kaiser LAUNCH", "Category": "Health & Medicine", "Organization": "Kaiser Permanente", "Location": "Bay Area", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Medium", "Link": "https://www.kaiserpermanentejobs.org/internships"}, {"Title": "Alameda Health System HealthPATH", "Category": "Health & Medicine", "Organization": "Alameda Health System", "Location": "Oakland", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "http://healthpath-ahs.org"}, {"Title": "FACES for the Future", "Category": "Health & Medicine", "Organization": "FACES Coalition", "Location": "Bay Area", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "https://facesforthefuture.org/"}, {"Title": "Gladstone Summer Scholars", "Category": "Health & Medicine", "Organization": "Gladstone Institutes", "Location": "San Francisco", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://gladstone.org/"}, {"Title": "George Mark Teen Volunteer Program", "Category": "Health & Medicine", "Organization": "George Mark Children's House", "Location": "San Leandro", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://georgemark.org/"}, {"Title": "Family House SF Volunteer", "Category": "Health & Medicine", "Organization": "Family House San Francisco", "Location": "San Francisco", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://familyhouseinc.org/"}, {"Title": "UCSF Science & Health Education Partnership (SEP) High School Intern Program", "Category": "Health & Medicine", "Organization": "UCSF Science & Health Education Partnership", "Location": "San Francisco, CA", "Type": "Biomedical Research Internship", "Grade Level": "Rising Seniors", "Paid/Volunteer": "Paid", "Difficulty": "Highly Competitive", "Link": "https://sep.ucsf.edu/programs/high-school-students/intern-program/"}, {"Title": "Enterprise for Youth – Paid Internship & Career Program", "Category": "Business & Leadership", "Organization": "Enterprise for Youth", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Competitive", "Link": "https://www.enterpriseforyouth.org/"}, {"Title": "BUILD Bay Area – Youth Entrepreneur Program", "Category": "Business & Leadership", "Organization": "BUILD", "Location": "Bay Area, CA", "Type": "Entrepreneurship Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://build.org/"}, {"Title": "Berkeley Haas – Business Academy for Youth", "Category": "Business & Leadership", "Organization": "UC Berkeley Haas", "Location": "Berkeley, CA", "Type": "Summer Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Highly Competitive", "Link": "https://haas.berkeley.edu/business-academy/high-school/high-school-entrepreneurship/"}, {"Title": "California DECA", "Category": "Business & Leadership", "Organization": "California DECA", "Location": "California (Bay Area Chapters)", "Type": "Competition", "Grade Level": " High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://californiadeca.org/"}, {"Title": "Coro Northern California – Youth Fellows Program", "Category": "Business & Leadership", "Organization": "Coro Northern California", "Location": "San Francisco, CA", "Type": "Leadership Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://coroca.org/programs/"}, {"Title": "All Stars Project – Development School for Youth", "Category": "Business & Leadership", "Organization": "All Stars Project", "Location": "San Francisco, CA", "Type": "Leadership Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://allstars.org/"}, {"Title": "Berkeley M.E.T. Innovation Academy", "Category": "Business & Leadership", "Organization": "UC Berkeley M.E.T.", "Location": "Berkeley, CA", "Type": "Innovation Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Highly Competitive", "Link": "https://met.berkeley.edu/"}, {"Title": "NFTE West (Northern California) Youth Entrepreneurship Challenge", "Category": "Business & Leadership", "Organization": "Network for Teaching Entrepreneurship (NFTE)", "Location": "San Francisco Bay Area", "Type": "Entrepreneurship Competition", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://nfte.com/"}, {"Title": "Diamond Challenge – UC Berkeley Regional Competition", "Category": "Business & Leadership", "Organization": "Diamond Challenge / UC Berkeley", "Location": "Berkeley, CA", "Type": "Business Competition", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://diamondchallenge.org/"}, {"Title": "Young Entrepreneurs Academy (YEA!) – East Bay", "Category": "Business & Leadership", "Organization": "Young Entrepreneurs Academy", "Location": "East Bay, CA", "Type": "Entrepreneurship Program", "Grade Level": "Middle & High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Competitive", "Link": "https://yeausa.org/"}, {"Title": "Lawrence Hall of Science – Teen Research Programs", "Category": "Science & Research", "Organization": "Lawrence Hall of Science", "Location": "Berkeley, CA", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://lawrencehallofscience.org/visitors/teen-research-programs/"}, {"Title": "Headwaters Science Institute – Field Research Program", "Category": "Science & Research", "Organization": "Headwaters Science Institute", "Location": "Northern California", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Competitive", "Link": "https://headwatersscienceinstitute.org/"}, {"Title": "Synopsys Championship (Silicon Valley Science & Technology Championship)", "Category": "Science & Research", "Organization": "Synopsys Championship", "Location": "San Jose, CA", "Type": "Science Competition", "Grade Level": "Grades 6–12", "Paid/Volunteer": "Free", "Difficulty": "Highly Competitive", "Link": "https://science-fair.org/"}, {"Title": "Joint Genome Institute (JGI)", "Category": "Science & Research", "Organization": "Joint Genome Institute", "Location": "Berkeley, CA", "Type": "Research Opportunity", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Highly Competitive", "Link": "https://jgi.doe.gov/"}, {"Title": "Golden Gate National Recreation Area Internship", "Category": "Science & Research", "Organization": "Golden Gate National Parks Conservancy", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.parksconservancy.org/internships/internships"}, {"Title": "California Academy of Sciences – Careers in Science (CiS)", "Category": "Science & Research", "Organization": "California Academy of Sciences", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Highly Competitive", "Link": "https://www.calacademy.org/youth-programs"}, {"Title": "Chabot Space & Science Center – Galaxy Explorers", "Category": "Science & Research", "Organization": "Chabot Space & Science Center", "Location": "Oakland, CA", "Type": "STEM Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.chabotspace.org/"}, {"Title": "Marine Science Institute – Junior Counselor Program", "Category": "Science & Research", "Organization": "Marine Science Institute", "Location": "Redwood City, CA", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.sfbaymsi.org/volunteer"}, {"Title": "Student Conservation Association – Bay Area Urban Green Program", "Category": "Science & Research", "Organization": "Student Conservation Association", "Location": "Bay Area, CA", "Type": "Conservation Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Competitive", "Link": "https://thesca.org/program/urban-green/san-francisco-bay-area"}, {"Title": "The Tech Interactive – BioTinkering Lab & The Tech Challenge", "Category": "Science & Research", "Organization": "The Tech Interactive", "Location": "San Jose, CA", "Type": "STEM Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://www.thetech.org/education/"}];
 
 const fields = {
-  category: [...new Set(opportunities.map(x=>String(x["Category"]||"").trim()).filter(Boolean))].sort(),
-  grade: [...new Set(opportunities.map(x=>String(x["Grade Level"]||"").trim()).filter(Boolean))].sort(),
-  type: [...new Set(opportunities.map(x=>String(x["Type"]||"").trim()).filter(Boolean))].sort(),
-  paid: [...new Set(opportunities.map(x=>String(x["Paid/Volunteer"]||"").trim()).filter(Boolean))].sort()
+  category: [...new Set(opportunities.map(x => String(x["Category"] || "").trim()).filter(Boolean))].sort(),
+  grade: [...new Set(opportunities.map(x => String(x["Grade Level"] || "").trim()).filter(Boolean))].sort(),
+  type: [...new Set(opportunities.map(x => String(x["Type"] || "").trim()).filter(Boolean))].sort(),
+  paid: [...new Set(opportunities.map(x => String(x["Paid/Volunteer"] || "").trim()).filter(Boolean))].sort()
 };
 
-function fill(id, values){
-  const el=document.getElementById(id);
-  values.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;el.appendChild(o)});
-}
-fill("category",fields.category); fill("grade",fields.grade); fill("type",fields.type); fill("paid",fields.paid);
+function fill(id, values) {
+  const el = document.getElementById(id);
 
-function render(){
-  const q=document.getElementById("search").value.toLowerCase().trim();
-  const filters={category:document.getElementById("category").value,grade:document.getElementById("grade").value,type:document.getElementById("type").value,paid:document.getElementById("paid").value};
-  const filtered=opportunities.filter(x=>{
-    const text=Object.values(x).join(" ").toLowerCase();
-    return (!q||text.includes(q))
-      &&(!filters.category||String(x["Category"]||"").trim()===filters.category)
-      &&(!filters.grade||String(x["Grade Level"]||"").trim()===filters.grade)
-      &&(!filters.type||String(x["Type"]||"").trim()===filters.type)
-      &&(!filters.paid||String(x["Paid/Volunteer"]||"").trim()===filters.paid);
+  values.forEach(v => {
+    const option = document.createElement("option");
+    option.value = v;
+    option.textContent = v;
+    el.appendChild(option);
+  });
+}
+
+fill("category", fields.category);
+fill("grade", fields.grade);
+fill("type", fields.type);
+fill("paid", fields.paid);
+
+function render() {
+
+  const q = document.getElementById("search").value.toLowerCase().trim();
+
+  const filters = {
+    category: document.getElementById("category").value,
+    grade: document.getElementById("grade").value,
+    type: document.getElementById("type").value,
+    paid: document.getElementById("paid").value
+  };
+
+  const filtered = opportunities.filter(x => {
+
+    const text = Object.values(x).join(" ").toLowerCase();
+
+    return (!q || text.includes(q))
+      && (!filters.category || String(x["Category"] || "").trim() === filters.category)
+      && (!filters.grade || String(x["Grade Level"] || "").trim() === filters.grade)
+      && (!filters.type || String(x["Type"] || "").trim() === filters.type)
+      && (!filters.paid || String(x["Paid/Volunteer"] || "").trim() === filters.paid);
   });
 
-  document.getElementById("count").textContent=`Showing ${filtered.length} of ${opportunities.length} opportunities`;
-  const results=document.getElementById("results");
-  if(!filtered.length){results.innerHTML='<div class="empty">No opportunities match those filters.</div>';return}
+  document.getElementById("count").textContent =
+    `Showing ${filtered.length} of ${opportunities.length} opportunities`;
 
-  results.innerHTML=filtered.map(x=>{
-    const link=String(x["Link"]||"").trim();
-    return `<article class="card">
-      <div class="badges">
-        ${x["Category"]?`<span class="badge">${esc(x["Category"])}</span>`:""}
-        ${x["Paid/Volunteer"]?`<span class="badge">${esc(x["Paid/Volunteer"])}</span>`:""}
-      </div>
-      <h2>${esc(x["Title"]||"Untitled opportunity")}</h2>
-      <div class="org">${esc(x["Organization"]||"")}</div>
-      <div class="meta">
-        ${x["Location"]?`📍 ${esc(x["Location"])}<br>`:""}
-        ${x["Grade Level"]?`🎓 ${esc(x["Grade Level"])}<br>`:""}
-        ${x["Type"]?`📌 ${esc(x["Type"])}<br>`:""}
-        ${x["Difficulty"]?`⭐ ${esc(x["Difficulty"])}`:""}
-      </div>
-      ${link?`<a href="${esc(link)}" target="_blank" rel="noopener">View opportunity →</a>`:""}
-    </article>`;
+  const results = document.getElementById("results");
+
+  if (!filtered.length) {
+    results.innerHTML =
+      '<div class="empty">No opportunities match those filters. Try changing your search.</div>';
+    return;
+  }
+
+  results.innerHTML = filtered.map(x => {
+
+    const link = String(x["Link"] || "").trim();
+
+    return `
+      <article class="card">
+
+        <div class="badges">
+
+          ${x["Category"]
+            ? `<span class="badge">${esc(x["Category"])}</span>`
+            : ""}
+
+          ${x["Paid/Volunteer"]
+            ? `<span class="badge green">${esc(x["Paid/Volunteer"])}</span>`
+            : ""}
+
+        </div>
+
+        <h2>${esc(x["Title"] || "Untitled opportunity")}</h2>
+
+        <div class="org">
+          ${esc(x["Organization"] || "")}
+        </div>
+
+        <div class="meta">
+
+          ${x["Location"]
+            ? `📍 ${esc(x["Location"])}<br>`
+            : ""}
+
+          ${x["Grade Level"]
+            ? `🎓 ${esc(x["Grade Level"])}<br>`
+            : ""}
+
+          ${x["Type"]
+            ? `📌 ${esc(x["Type"])}<br>`
+            : ""}
+
+          ${x["Difficulty"]
+            ? `⭐ ${esc(x["Difficulty"])}`
+            : ""}
+
+        </div>
+
+        ${link
+          ? `<a href="${esc(link)}" target="_blank" rel="noopener">
+              View opportunity →
+             </a>`
+          : ""}
+
+      </article>
+    `;
+
   }).join("");
 }
 
-function esc(v){
-  return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+function esc(v) {
+  return String(v).replace(
+    /[&<>"']/g,
+    c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    }[c])
+  );
 }
-document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",render));
+
+document
+  .querySelectorAll("input,select")
+  .forEach(el => el.addEventListener("input", render));
+
 render();
+
 </script>
+
 </body>
 </html>
