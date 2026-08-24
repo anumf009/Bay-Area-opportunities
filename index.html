@@ -253,10 +253,7 @@ footer {
 }
 
 /* MOBILE */
-@media(max-width: 900px) {
-  .controls {
-    grid-template-columns: 1fr 1fr;
-  }
+
 @media(max-width: 900px) {
   .home-options {
     grid-template-columns: 1fr;
@@ -295,6 +292,79 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+#finderModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(23, 32, 51, .65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.finder-box {
+  background: white;
+  width: 100%;
+  max-width: 550px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(20,30,60,.25);
+}
+
+.finder-box h2 {
+  margin: 0 35px 8px 0;
+  font-size: 26px;
+}
+
+.finder-box p {
+  color: #596275;
+  line-height: 1.5;
+}
+
+.finder-box label {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+  margin: 16px 0 7px;
+}
+
+.finder-close {
+  position: absolute;
+  top: 15px;
+  right: 18px;
+  border: none;
+  background: transparent;
+  font-size: 28px;
+  color: #687083;
+  cursor: pointer;
+}
+
+.finder-submit {
+  width: 100%;
+  border: none;
+  background: #3157d5;
+  color: white;
+  padding: 13px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 22px;
+}
+
+#finderResults {
+  margin-top: 25px;
+}
+
+.finder-result {
+  border: 1px solid #e8ebf2;
+  border-radius: 12px;
+  padding: 15px;
+  margin-top: 12px;
+}  
 </style>
 </head>
 
@@ -314,9 +384,9 @@ footer {
 </header>
 
    </p>
-    <button onclick="alert('The personalized opportunity finder is coming soon!')">
-      Coming Soon
-    </button>
+    <button onclick="openFinder()">
+  🤖 Find Opportunities for Me
+</button>
   </div>
 
   <div class="option-card">
@@ -364,9 +434,83 @@ footer {
 <footer>
   Bay Area Opportunities • Helping students find opportunities that fit their interests.
 </footer>
+<div id="finderModal" style="display: none;">
+  <div class="finder-box">
 
+    <button class="finder-close" onclick="closeFinder()">×</button>
+
+    <h2>Find Opportunities for Me 🤖</h2>
+
+    <p>Tell us what you're interested in, and we'll help you find opportunities that match.</p>
+
+    <label for="finderInterest">What are you interested in?</label>
+    <select id="finderInterest">
+      <option value="">Choose an interest</option>
+      <option value="Law & Government">Law & Government</option>
+      <option value="Computer Science / Engineering">Computer Science / Engineering</option>
+      <option value="Health & Medicine">Health & Medicine</option>
+      <option value="Business & Leadership">Business & Leadership</option>
+      <option value="Science & Research">Science & Research</option>
+    </select>
+
+    <label for="finderType">What type of opportunity?</label>
+    <select id="finderType">
+      <option value="">Any type</option>
+      <option value="Internship">Internship</option>
+      <option value="Volunteer">Volunteer</option>
+      <option value="Program">Program</option>
+      <option value="Research Program">Research</option>
+      <option value="Leadership">Leadership</option>
+      <option value="Competition">Competition</option>
+    </select>
+
+    <button class="finder-submit" onclick="findMyOpportunities()">
+      Find My Opportunities →
+    </button>
+
+    <div id="finderResults"></div>
+
+  </div>
+</div>
 <script>
+function openFinder() {
+  document.getElementById("finderModal").style.display = "flex";
+}
 
+function closeFinder() {
+  document.getElementById("finderModal").style.display = "none";
+}
+function findMyOpportunities() {
+  const interest = document.getElementById("finderInterest").value;
+  const type = document.getElementById("finderType").value;
+  const results = document.getElementById("finderResults");
+
+  const matches = opportunities.filter(x => {
+    const categoryMatch = !interest || x["Category"] === interest;
+    const typeMatch = !type || x["Type"].toLowerCase().includes(type.toLowerCase());
+
+    return categoryMatch && typeMatch;
+  });
+
+  if (!matches.length) {
+    results.innerHTML = "<p>No exact matches found. Try choosing a different combination.</p>";
+    return;
+  }
+
+  results.innerHTML = `
+    <h3>We found ${matches.length} match${matches.length === 1 ? "" : "es"}! 🎉</h3>
+    ${matches.slice(0, 5).map(x => `
+      <div class="finder-result">
+        <strong>${esc(x["Title"])}</strong><br>
+        ${esc(x["Organization"])}<br>
+        📍 ${esc(x["Location"])}<br>
+        <a href="${esc(x["Link"])}" target="_blank" rel="noopener">
+          View opportunity →
+        </a>
+      </div>
+    `).join("")}
+  `;
+}
 const opportunities = [{"Title": "Community Youth Courts Volunteer", "Category": "Law & Government", "Organization": "Community Youth Courts", "Location": "Contra Costa County", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.communityyouthcourts.com/volunteer.html"}, {"Title": "CYDL Summer Legal Fellowship", "Category": "Law & Government", "Organization": "Center for Youth Development through Law", "Location": "Bay Area", "Type": "Fellowship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://www.youthlawworks.org/programs"}, {"Title": "YMCA Youth Advocate Program", "Category": "Law & Government", "Organization": "YMCA Youth & Government", "Location": "California", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.ymcayag.org/yap/"}, {"Title": "SF Public Defender High School Internship", "Category": "Law & Government", "Organization": "San Francisco Public Defender's Office", "Location": "San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://sfpublicdefender.org/careers/internship/"}, {"Title": "Contra Costa Mock Trial Program", "Category": "Law & Government", "Organization": "Contra Costa County Office of Education", "Location": "Contra Costa County", "Type": "Competition", "Grade Level": "9–12", "Paid/Volunteer": "", "Difficulty": "Medium", "Link": "https://www.cccoe.k12.ca.us/Departments--Schools/Departments/Communications/Academic-Events/Mock-Trial/index.html"}, {"Title": "City of Tracy Mayor's Youth Internship", "Category": "Law & Government", "Organization": "City of Tracy", "Location": "Tracy", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "Medium", "Link": "https://www.cityoftracy.org/Departments/Human-Resources/Youth-Engagement-Activities"}, {"Title": "Bay Area Urban Debate League", "Category": "Law & Government", "Organization": "BAUDL", "Location": "Bay Area", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "", "Difficulty": "Medium", "Link": "https://www.baudl.org/get-involved.html"}, {"Title": "California Youth Advisory Council", "Category": "Law & Government", "Organization": "California Commission on the Status of Women and Girls", "Location": "California", "Type": "Leadership", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "High", "Link": "https://women.ca.gov/youth-advisory-council-applications/"}, {"Title": "SF Bar JDC Law Internships", "Category": "Law & Government", "Organization": "Justice & Diversity Center", "Location": " San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://www.sfbar.org/jdc/diversity-programs-volunteer-opportunities/"}, {"Title": "Communities for a Better Environment", "Category": "Law & Government", "Organization": "Communities for a Better Environment", "Location": "Bay Area", "Type": "Volunteer/Internship", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://www.cbecal.org/get-involved/volunteer-internships/"}, {"Title": "Experiences in Research (EinR)", "Category": "Computer Science / Engineering", "Organization": "Lawrence Berkeley National Laboratory", "Location": "Berkeley", "Type": "research internship", "Grade Level": "High School", "Paid/Volunteer": "Paid/Varies", "Difficulty": "High", "Link": "https://k12education.lbl.gov/programs/high-school/experiences-in-research"}, {"Title": "Dev/Mission Tech Pre-Apprenticeship", "Category": "Computer Science / Engineering", "Organization": "Dev/Mission", "Location": "San Francisco", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "https://devmission.org/"}, {"Title": "Starter School Program", "Category": "Computer Science / Engineering", "Organization": "Starter School", "Location": "Remote", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Medium", "Link": "https://www.starterschool.com/"}, {"Title": "Lockheed Martin Space Internship", "Category": "Computer Science / Engineering", "Organization": "Lockheed Martin", "Location": "Bay Area", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://www.lockheedmartin.com/en-us/careers/candidates/students-early-careers/high-school.html"}, {"Title": "GRIPS Stanford", "Category": "Computer Science / Engineering", "Organization": "Stanford University", "Location": "Stanford", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Unpaid", "Difficulty": "High", "Link": "https://med.stanford.edu/genetics/education/GRIPS.html"}, {"Title": "UC Santa Cruz SIP", "Category": "Computer Science / Engineering", "Organization": "UC Santa Cruz", "Location": "Santa Cruz", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "High", "Link": "https://sip.ucsc.edu/"}, {"Title": "UCSF AI4ALL", "Category": "Computer Science / Engineering", "Organization": "UCSF", "Location": "San Francisco", "Type": "AI Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://ai4all.ucsf.edu/apply.html"}, {"Title": "Stanford SIMR", "Category": "Computer Science / Engineering", "Organization": "Stanford Medicine", "Location": "Stanford", "Type": "AI Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://med.stanford.edu/simr/program-information.html"}, {"Title": "Hidden Genius Project", "Category": "Computer Science / Engineering", "Organization": "Hidden Genius Project", "Location": "Bay Area", "Type": "Research Program", "Grade Level": "11–12", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://www.hiddengeniusproject.org/"}, {"Title": "UCSF SSRP", "Category": "Health & Medicine", "Organization": "UCSF Benioff Children's Hospital", "Location": "San Francisco", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Varies", "Difficulty": "High", "Link": "https://summerstudents.ucsf.edu/"}, {"Title": "Stanford Medical Youth Science Program", "Category": "Health & Medicine", "Organization": "Stanford Medicine", "Location": "Stanford", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "High", "Link": "https://med.stanford.edu/che.html"}, {"Title": "UCSF High School Intern Program", "Category": "Health & Medicine", "Organization": "UCSF", "Location": "San Francisco", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid/Varies", "Difficulty": "High", "Link": "https://sep.ucsf.edu/programs/high-school-students/intern-program/"}, {"Title": "Kaiser LAUNCH", "Category": "Health & Medicine", "Organization": "Kaiser Permanente", "Location": "Bay Area", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Medium", "Link": "https://www.kaiserpermanentejobs.org/internships"}, {"Title": "Alameda Health System HealthPATH", "Category": "Health & Medicine", "Organization": "Alameda Health System", "Location": "Oakland", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "http://healthpath-ahs.org"}, {"Title": "FACES for the Future", "Category": "Health & Medicine", "Organization": "FACES Coalition", "Location": "Bay Area", "Type": "Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Medium", "Link": "https://facesforthefuture.org/"}, {"Title": "Gladstone Summer Scholars", "Category": "Health & Medicine", "Organization": "Gladstone Institutes", "Location": "San Francisco", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "High", "Link": "https://gladstone.org/"}, {"Title": "George Mark Teen Volunteer Program", "Category": "Health & Medicine", "Organization": "George Mark Children's House", "Location": "San Leandro", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://georgemark.org/"}, {"Title": "Family House SF Volunteer", "Category": "Health & Medicine", "Organization": "Family House San Francisco", "Location": "San Francisco", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Medium", "Link": "https://familyhouseinc.org/"}, {"Title": "UCSF Science & Health Education Partnership (SEP) High School Intern Program", "Category": "Health & Medicine", "Organization": "UCSF Science & Health Education Partnership", "Location": "San Francisco, CA", "Type": "Biomedical Research Internship", "Grade Level": "Rising Seniors", "Paid/Volunteer": "Paid", "Difficulty": "Highly Competitive", "Link": "https://sep.ucsf.edu/programs/high-school-students/intern-program/"}, {"Title": "Enterprise for Youth – Paid Internship & Career Program", "Category": "Business & Leadership", "Organization": "Enterprise for Youth", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Competitive", "Link": "https://www.enterpriseforyouth.org/"}, {"Title": "BUILD Bay Area – Youth Entrepreneur Program", "Category": "Business & Leadership", "Organization": "BUILD", "Location": "Bay Area, CA", "Type": "Entrepreneurship Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://build.org/"}, {"Title": "Berkeley Haas – Business Academy for Youth", "Category": "Business & Leadership", "Organization": "UC Berkeley Haas", "Location": "Berkeley, CA", "Type": "Summer Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Highly Competitive", "Link": "https://haas.berkeley.edu/business-academy/high-school/high-school-entrepreneurship/"}, {"Title": "California DECA", "Category": "Business & Leadership", "Organization": "California DECA", "Location": "California (Bay Area Chapters)", "Type": "Competition", "Grade Level": " High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://californiadeca.org/"}, {"Title": "Coro Northern California – Youth Fellows Program", "Category": "Business & Leadership", "Organization": "Coro Northern California", "Location": "San Francisco, CA", "Type": "Leadership Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://coroca.org/programs/"}, {"Title": "All Stars Project – Development School for Youth", "Category": "Business & Leadership", "Organization": "All Stars Project", "Location": "San Francisco, CA", "Type": "Leadership Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://allstars.org/"}, {"Title": "Berkeley M.E.T. Innovation Academy", "Category": "Business & Leadership", "Organization": "UC Berkeley M.E.T.", "Location": "Berkeley, CA", "Type": "Innovation Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Highly Competitive", "Link": "https://met.berkeley.edu/"}, {"Title": "NFTE West (Northern California) Youth Entrepreneurship Challenge", "Category": "Business & Leadership", "Organization": "Network for Teaching Entrepreneurship (NFTE)", "Location": "San Francisco Bay Area", "Type": "Entrepreneurship Competition", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://nfte.com/"}, {"Title": "Diamond Challenge – UC Berkeley Regional Competition", "Category": "Business & Leadership", "Organization": "Diamond Challenge / UC Berkeley", "Location": "Berkeley, CA", "Type": "Business Competition", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://diamondchallenge.org/"}, {"Title": "Young Entrepreneurs Academy (YEA!) – East Bay", "Category": "Business & Leadership", "Organization": "Young Entrepreneurs Academy", "Location": "East Bay, CA", "Type": "Entrepreneurship Program", "Grade Level": "Middle & High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Competitive", "Link": "https://yeausa.org/"}, {"Title": "Lawrence Hall of Science – Teen Research Programs", "Category": "Science & Research", "Organization": "Lawrence Hall of Science", "Location": "Berkeley, CA", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Competitive", "Link": "https://lawrencehallofscience.org/visitors/teen-research-programs/"}, {"Title": "Headwaters Science Institute – Field Research Program", "Category": "Science & Research", "Organization": "Headwaters Science Institute", "Location": "Northern California", "Type": "Research Program", "Grade Level": "High School", "Paid/Volunteer": "Tuition Required", "Difficulty": "Competitive", "Link": "https://headwatersscienceinstitute.org/"}, {"Title": "Synopsys Championship (Silicon Valley Science & Technology Championship)", "Category": "Science & Research", "Organization": "Synopsys Championship", "Location": "San Jose, CA", "Type": "Science Competition", "Grade Level": "Grades 6–12", "Paid/Volunteer": "Free", "Difficulty": "Highly Competitive", "Link": "https://science-fair.org/"}, {"Title": "Joint Genome Institute (JGI)", "Category": "Science & Research", "Organization": "Joint Genome Institute", "Location": "Berkeley, CA", "Type": "Research Opportunity", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Highly Competitive", "Link": "https://jgi.doe.gov/"}, {"Title": "Golden Gate National Recreation Area Internship", "Category": "Science & Research", "Organization": "Golden Gate National Parks Conservancy", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.parksconservancy.org/internships/internships"}, {"Title": "California Academy of Sciences – Careers in Science (CiS)", "Category": "Science & Research", "Organization": "California Academy of Sciences", "Location": "San Francisco, CA", "Type": "Internship", "Grade Level": "High School", "Paid/Volunteer": "Paid", "Difficulty": "Highly Competitive", "Link": "https://www.calacademy.org/youth-programs"}, {"Title": "Chabot Space & Science Center – Galaxy Explorers", "Category": "Science & Research", "Organization": "Chabot Space & Science Center", "Location": "Oakland, CA", "Type": "STEM Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.chabotspace.org/"}, {"Title": "Marine Science Institute – Junior Counselor Program", "Category": "Science & Research", "Organization": "Marine Science Institute", "Location": "Redwood City, CA", "Type": "Volunteer", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Moderate", "Link": "https://www.sfbaymsi.org/volunteer"}, {"Title": "Student Conservation Association – Bay Area Urban Green Program", "Category": "Science & Research", "Organization": "Student Conservation Association", "Location": "Bay Area, CA", "Type": "Conservation Program", "Grade Level": "High School", "Paid/Volunteer": "Volunteer", "Difficulty": "Competitive", "Link": "https://thesca.org/program/urban-green/san-francisco-bay-area"}, {"Title": "The Tech Interactive – BioTinkering Lab & The Tech Challenge", "Category": "Science & Research", "Organization": "The Tech Interactive", "Location": "San Jose, CA", "Type": "STEM Program", "Grade Level": "High School", "Paid/Volunteer": "Free", "Difficulty": "Moderate", "Link": "https://www.thetech.org/education/"}];
 
 const fields = {
