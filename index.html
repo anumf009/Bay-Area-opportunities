@@ -126,23 +126,17 @@ header p {
   margin: 0 auto;
   padding: 35px 20px 60px;
 }
-/* MAIN */
-.container {
-  max-width: 1150px;
-  margin: 0 auto;
-  padding: 35px 20px 60px;
-}
 
 /* FILTER BOX */
 .controls {
   background: white;
-  padding: 22px;
+  padding: 24px;
   border-radius: 18px;
   box-shadow: 0 5px 25px rgba(20,30,60,.08);
   display: grid;
   grid-template-columns: 2fr repeat(4, 1fr);
   gap: 12px;
-  margin-bottom: 25px;
+  margin-bottom: 28px;
 }
 
 input,
@@ -156,7 +150,10 @@ select {
   color: #172033;
   outline: none;
 }
-
+#search {
+  padding: 15px 16px;
+  font-size: 15px;
+}
 input:focus,
 select:focus {
   border-color: #3157d5;
@@ -408,7 +405,7 @@ footer {
 </header>
 
 <section class="controls">
-    <input id="search" placeholder="🔎 Search opportunities...">
+    <input id="search" placeholder="🔎 Search by opportunity, organization, or interest...">
 
     <select id="category">
       <option value="">All categories</option>
