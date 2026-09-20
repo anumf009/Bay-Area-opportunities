@@ -466,6 +466,15 @@ footer {
       <option value="Competition">Competition</option>
     </select>
 
+   <label for="finderGrade">What grade are you in?</label>
+<select id="finderGrade">
+  <option value="">Any grade</option>
+  <option value="9">9th grade</option>
+  <option value="10">10th grade</option>
+  <option value="11">11th grade</option>
+  <option value="12">12th grade</option>
+</select>
+
     <button class="finder-submit" onclick="findMyOpportunities()">
       Find My Opportunities →
     </button>
@@ -485,13 +494,14 @@ function closeFinder() {
 function findMyOpportunities() {
   const interest = document.getElementById("finderInterest").value;
   const type = document.getElementById("finderType").value;
+  const grade = document.getElementById("finderGrade").value;
   const results = document.getElementById("finderResults");
 
   const matches = opportunities.filter(x => {
     const categoryMatch = !interest || x["Category"] === interest;
     const typeMatch = !type || x["Type"].toLowerCase().includes(type.toLowerCase());
-
-    return categoryMatch && typeMatch;
+    const gradeMatch = !grade || x["Grade Level"].toLowerCase().includes(grade);
+return categoryMatch && typeMatch && gradeMatch;
   });
 
   if (!matches.length) {
