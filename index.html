@@ -126,6 +126,61 @@ header p {
   margin: 0 auto;
   padding: 25px 20px 50px;
 }
+/* INTRO SECTION */
+.intro-section {
+  background: white;
+  padding: 30px;
+  border-radius: 18px;
+  margin-bottom: 25px;
+  box-shadow: 0 5px 25px rgba(20,30,60,.08);
+}
+
+.intro-text {
+  max-width: 700px;
+  margin-bottom: 24px;
+}
+
+.intro-text h2 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  color: #172033;
+}
+
+.intro-text p {
+  margin: 0;
+  color: #667085;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.intro-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.intro-feature {
+  padding: 18px;
+  background: #f7f9fc;
+  border-radius: 14px;
+}
+
+.intro-feature span {
+  font-size: 22px;
+}
+
+.intro-feature strong {
+  display: block;
+  margin: 8px 0 5px;
+  color: #172033;
+}
+
+.intro-feature p {
+  margin: 0;
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.5;
+}
 
 /* FILTER BOX */
 .controls {
@@ -405,6 +460,36 @@ footer {
   
 </header>
 <main class="container">
+  <section class="intro-section">
+  <div class="intro-text">
+    <h2>Built for Bay Area students.</h2>
+    <p>
+      Find internships, programs, volunteering, and other opportunities
+      without having to search dozens of different websites.
+    </p>
+  </div>
+
+  <div class="intro-features">
+    <div class="intro-feature">
+      <span>🎓</span>
+      <strong>For Students</strong>
+      <p>Opportunities made for high school students.</p>
+    </div>
+
+    <div class="intro-feature">
+      <span>📍</span>
+      <strong>Bay Area</strong>
+      <p>Focused on opportunities around the Bay Area.</p>
+    </div>
+
+    <div class="intro-feature">
+      <span>🔎</span>
+      <strong>Easy to Explore</strong>
+      <p>Search and filter to find what fits you.</p>
+    </div>
+  </div>
+</section>
+  
 <section class="controls">
     <input id="search" placeholder="🔎 Search by opportunity, organization, or interest...">
 
