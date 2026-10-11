@@ -38,7 +38,10 @@ const titleOf=x=>clean(x.Title||x.Program||'Untitled opportunity');
 const allVals=key=>[...new Set(opportunities.map(x=>clean(x[key])).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
 function addOptions(id,values){const el=$(id);values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o)})}
 addOptions('category',allVals('Category'));addOptions('grade',allVals('Grade Level'));addOptions('type',allVals('Type'));addOptions('paid',allVals('Paid/Volunteer'));addOptions('location',allVals('Location'));
-addOptions('finderInterest',interests.map(x=>x[0]));addOptions('finderType',allVals('Type'));addOptions('finderGrade',allVals('Grade Level'));
+addOptions('finderInterest',interests.map(x=>x[0]));
+const finderTypes=['Internship / job','Research / science','Volunteer / service','Program / academy','Competition / challenge','Leadership / civic','Summer opportunity','Any other type'];
+addOptions('finderType',finderTypes);
+addOptions('finderGrade',['Middle school','High school','Rising junior (entering grade 11)','Rising senior (entering grade 12)']);
 $('statTotal').textContent=opportunities.length+'+';$('statCategories').textContent=interests.length;
 $('interestGrid').innerHTML=interests.slice(0,15).map(([name,emoji])=>`<button class="interest" data-interest="${esc(name)}"><span class="emoji">${emoji}</span><strong>${esc(name)}</strong></button>`).join('');
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -67,7 +70,48 @@ function score(x,terms){const title=titleOf(x).toLowerCase(),org=clean(x.Organiz
 function render(){const arr=getFiltered();$('count').textContent=`Showing ${arr.length} of ${opportunities.length} listings`;$('statSaved').textContent=saved.size;$('results').innerHTML=arr.length?arr.map(x=>{const title=titleOf(x),isSaved=saved.has(title),link=clean(x.Link);return `<article class="card"><div class="cardtop"><span class="pill">${esc(clean(x.Category)||'Explore')}</span><button class="save ${isSaved?'saved':''}" data-save="${esc(title)}" aria-label="${isSaved?'Remove saved':'Save'} ${esc(title)}">${isSaved?'♥':'♡'}</button></div><h3>${esc(title)}</h3><div class="org">${esc(clean(x.Organization))}</div><p class="desc">${esc(clean(x.Description)||`Explore this ${clean(x.Type||'student opportunity').toLowerCase()} from ${clean(x.Organization)||'the listed organization'}. Check the official page for current details.`)}</p><div class="metas">${clean(x.Location)?`<span class="meta">📍 ${esc(x.Location)}</span>`:''}${clean(x['Grade Level'])?`<span class="meta">🎓 ${esc(x['Grade Level'])}</span>`:''}${clean(x.Type)?`<span class="meta">✦ ${esc(x.Type)}</span>`:''}${clean(x['Paid/Volunteer'])?`<span class="meta">${esc(x['Paid/Volunteer'])}</span>`:''}</div><div class="cardbottom"><span class="difficulty">${clean(x.Difficulty)?'Selectivity: '+esc(x.Difficulty):'Check eligibility'}</span>${link?`<a href="${esc(link)}" target="_blank" rel="noopener noreferrer">Official details ↗</a>`:'<span class="difficulty">Link not provided</span>'}</div></article>`}).join(''):`<div class="empty"><strong>No matches yet</strong>Try fewer search words or clear one of the filters.<br><br><button class="small-btn" onclick="resetFilters()">Reset filters</button></div>`}
 function resetFilters(){['search','category','grade','type','paid','location'].forEach(id=>$(id).value='');$('savedOnly').classList.remove('active');$('sort').value='relevance';document.querySelectorAll('.interest').forEach(b=>b.classList.remove('active'));render()}
 function openFinder(){$('finderModal').classList.add('open');$('finderResults').innerHTML='';$('finderInterest').focus()}function closeFinder(){$('finderModal').classList.remove('open')}
-function findMyOpportunities(){const interest=$('finderInterest').value,type=$('finderType').value,grade=$('finderGrade').value;let arr=opportunities.filter(x=>matchesInterest(x,interest)&&(!type||clean(x.Type).toLowerCase().includes(type.toLowerCase()))&&(!grade||clean(x['Grade Level']).toLowerCase().includes(grade.toLowerCase())));$('finderResults').innerHTML=arr.length?`<strong>Found ${arr.length} match${arr.length===1?'':'es'}</strong>`+arr.slice(0,8).map(x=>`<div class="modal-result"><strong>${esc(titleOf(x))}</strong><div class="difficulty">${esc(clean(x.Organization))} · ${esc(clean(x.Location))}</div><a href="${esc(clean(x.Link))}" target="_blank" rel="noopener noreferrer">View official details ↗</a></div>`).join(''):'<p>No matches for that exact combination. Try leaving one answer set to “Any.”'}
+function gradeMatches(x,grade){
+  if(!grade)return true;
+  const g=clean(x['Grade Level']).toLowerCase().replace(/[–—]/g,'-');
+  const hasHigh=/high school|9-12|9-11|10-12|10-11|11-12|rising senior|rising junior/.test(g);
+  const hasMiddle=/middle|grades? 6-12|grades? 6|7-11|13-18/.test(g);
+  if(grade==='Middle school')return hasMiddle;
+  if(grade==='High school')return hasHigh||/ages? 14-18|ages? 14-17|15\+|16\+/.test(g);
+  if(grade==='Rising junior (entering grade 11)')return hasHigh||/10-11|11th grade|grades? 10-12/.test(g);
+  if(grade==='Rising senior (entering grade 12)')return hasHigh||/12|11th grade \/ rising senior/.test(g);
+  return true;
+}
+function typeMatches(x,type){
+  if(!type)return true;
+  const t=(clean(x.Type)+' '+titleOf(x)).toLowerCase();
+  const groups={
+    'Internship / job':['internship','job','employment','work experience','apprentice'],
+    'Research / science':['research','science','lab','medical scholars','simr','ssrp'],
+    'Volunteer / service':['volunteer','service','community service'],
+    'Program / academy':['program','academy','camp','fellowship','course','workshop'],
+    'Competition / challenge':['competition','challenge','contest','olympiad','mock trial','debate'],
+    'Leadership / civic':['leadership','civic','government','youth council','advocacy','public service'],
+    'Summer opportunity':['summer','seasonal','summer program','summer internship'],
+    'Any other type':[]
+  };
+  return type==='Any other type'?!Object.values(groups).flat().some(k=>t.includes(k)):(groups[type]||[]).some(k=>t.includes(k));
+}
+function findMyOpportunities(){
+  const interest=$('finderInterest').value,type=$('finderType').value,grade=$('finderGrade').value;
+  const gradePool=opportunities.filter(x=>gradeMatches(x,grade));
+  const exact=gradePool.filter(x=>matchesInterest(x,interest)&&typeMatches(x,type));
+  const interestPool=gradePool.filter(x=>matchesInterest(x,interest));
+  const typePool=gradePool.filter(x=>typeMatches(x,type));
+  const chosen=[],seen=new Set();
+  const add=(items,label)=>items.forEach(x=>{const key=titleOf(x);if(!seen.has(key)&&chosen.length<8){seen.add(key);chosen.push({x,label})}});
+  add(exact,'Matches all your choices');
+  if(chosen.length<3)add(interestPool,'Related option: same interest and grade, different type');
+  if(chosen.length<3)add(typePool,'Related option: same type and grade, different interest');
+  if(chosen.length<3)add(gradePool,'More options for this grade level');
+  const heading=exact.length>=3?`Found ${exact.length} exact matches`:`Found ${exact.length} exact match${exact.length===1?'':'es'} and added related options`;
+  const note=chosen.length<3?`<p>There are only ${chosen.length} suitable listings in the current directory for this grade selection. More verified listings are needed to offer three or more.</p>`:`<p>Exact matches appear first. Related suggestions may differ from your selected interest or type. Always check the official page for grade, age, dates, and eligibility.</p>`;
+  $('finderResults').innerHTML=`<strong>${heading}</strong>${note}`+chosen.map(({x,label})=>`<div class="modal-result"><strong>${esc(titleOf(x))}</strong><div class="difficulty">${esc(clean(x.Organization))} · ${esc(clean(x.Location))}</div><div class="difficulty">${esc(label)} · Listed grade level: ${esc(clean(x['Grade Level'])||'Check official eligibility')}</div><a href="${esc(clean(x.Link))}" target="_blank" rel="noopener noreferrer">View official details ↗</a></div>`).join('');
+}
 $('search').addEventListener('input',render);['category','grade','type','paid','location','sort'].forEach(id=>$(id).addEventListener('change',render));$('clearSearch').addEventListener('click',()=>{$('search').value='';render();$('search').focus()});$('reset').addEventListener('click',resetFilters);$('savedOnly').addEventListener('click',()=>{$('savedOnly').classList.toggle('active');render()});$('results').addEventListener('click',e=>{const b=e.target.closest('[data-save]');if(!b)return;const name=b.dataset.save;if(saved.has(name))saved.delete(name);else saved.add(name);try{localStorage.setItem(savedKey,JSON.stringify([...saved]))}catch(e){}render()});$('interestGrid').addEventListener('click',e=>{const b=e.target.closest('[data-interest]');if(!b)return;const name=b.dataset.interest;const active=b.classList.contains('active');document.querySelectorAll('.interest').forEach(n=>n.classList.remove('active'));if(active){$('category').value='';}else{b.classList.add('active');const exists=[...$('category').options].some(o=>o.value===name);$('category').value=exists?name:'';$('search').value='';window.__interestQuery=name;}render();if(![...$('category').options].some(o=>o.value===name)){const arr=opportunities.filter(x=>matchesInterest(x,name));$('count').textContent=`Showing ${arr.length} matches for ${name}`;$('results').innerHTML=arr.map(x=>{const title=titleOf(x);return `<article class="card"><div class="cardtop"><span class="pill">${esc(clean(x.Category))}</span><button class="save ${saved.has(title)?'saved':''}" data-save="${esc(title)}">${saved.has(title)?'♥':'♡'}</button></div><h3>${esc(title)}</h3><div class="org">${esc(clean(x.Organization))}</div><div class="metas"><span class="meta">📍 ${esc(clean(x.Location))}</span><span class="meta">🎓 ${esc(clean(x['Grade Level']))}</span></div><div class="cardbottom"><span class="difficulty">${esc(clean(x.Type))}</span><a href="${esc(clean(x.Link))}" target="_blank" rel="noopener noreferrer">Official details ↗</a></div></article>`}).join('')||'<div class="empty"><strong>No matches in this field yet</strong>Try a related interest or search.</div>'}});
 $('finderModal').addEventListener('click',e=>{if(e.target===$('finderModal'))closeFinder()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFinder()});render();
 </script></body></html>
